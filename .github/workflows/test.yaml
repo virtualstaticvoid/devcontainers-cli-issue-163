@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         features: [
-           "npm-test"
+           "pip-test"
         ]
         baseImage:
           [

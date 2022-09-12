@@ -1,6 +1,6 @@
 {
-  "name": "NPM Test",
-  "id": "npm-test",
+  "name": "Python `pip` Test",
+  "id": "pip-test",
   "version": "1.0.0",
   "description": "Testing installsAfter",
   "installsAfter": [
