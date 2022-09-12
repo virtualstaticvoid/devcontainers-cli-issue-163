@@ -1,14 +1,22 @@
 {
-    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:0-18",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "mads-hartmann.bash-ide-vscode"
-            ]
-        }
-    },
-    "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:1": {}
-    },
-    "postCreateCommand": "npm install -g @devcontainers/cli"
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "remoteUser": "vscode",
+  "features": {
+    "docker-in-docker": "latest",
+    "node": "latest"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mads-hartmann.bash-ide-vscode"
+      ]
+    }
+  },
+
+  // use the most recent published version off NPM
+  // "postCreateCommand": "npm install -g @devcontainers/cli",
+
+  // use the very latest version off GitHub
+  "postCreateCommand": "git clone --depth 1 --branch main https://github.com/devcontainers/cli.git $HOME/devcontainers && ( cd $HOME/devcontainers && yarn && yarn compile && npm link )"
+
 }

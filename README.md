@@ -1,174 +1,105 @@
-# Dev Container Features: Self Authoring Template
+# Feature Dependencies
 
-> This repo provides a starting point and example for creating your own custom [dev container features](), hosted for free on GitHub Container Registry.  The example in this repository follows the [**proposed**  dev container feature distribution specification](https://containers.dev/implementors/features-distribution/).  
->
-> The proposed specification is in its _finalization_ phase and is subject to change.  To provide feedback to the specification, please leave a comment [on spec issue #70](https://github.com/devcontainers/spec/issues/70).  For more broad feedback regarding dev container features, please see [spec issue #61](https://github.com/devcontainers/spec/issues/61).
+Replicates `devcontainers/cli` [issue #163](https://github.com/devcontainers/cli/issues/163).
 
-## Example Contents
+## Usage
 
-This repository contains a _collection_ of two features - `hello` and `color`. These features serve as simple feature implementations.  Each sub-section below shows a sample `devcontainer.json` alongside example usage of the feature.
-
-### `hello`
-
-Running `hello` inside the built container will print the greeting provided to it via its `greeting` option.
-
-```jsonc
-{
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-    "features": {
-        "ghcr.io/devcontainers/feature-template/hello:1": {
-            "greeting": "Hello"
-        }
-    }
-}
-```
+Clone this repository.
 
 ```bash
-$ hello
-
-Hello, user.
+git clone https://github.com/virtualstaticvoid/devcontainers-cli-issue-163.git
 ```
 
-### `color`
-
-Running `color` inside the built container will print your favorite color to standard out.
-
-```jsonc
-{
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-    "features": {
-        "ghcr.io/devcontainers/feature-template/color:1": {
-            "favorite": "green"
-        }
-    }
-}
-```
+Open the project in VSCode and then re-open in a development container.
 
 ```bash
-$ color
-
-my favorite color is green
+cd devcontainers-cli-issue-163
+code .
 ```
 
-## Repo and Feature Structure
+Or, if you have the `devcontainer` script installed.
 
-Similar to the [`devcontainers/features`](https://github.com/devcontainers/features) repo, this repository has a `src` folder.  Each feature has its own sub-folder, containing at least a `devcontainer-feature.json` and an entrypoint script `install.sh`. 
+```bash
+cd devcontainers-cli-issue-163
+devcontainer open .
+```
+
+Once "inside" the development container, run the tests for `npm-test` feature:
+
+```bash
+devcontainer features test . \
+  --base-image mcr.microsoft.com/devcontainers/base:ubuntu-22.04 \
+  --features npm-test
+```
+
+Notice the error reported in output `./install.sh: 4: pip: not found`.
 
 ```
-├── src
-│   ├── hello
-│   │   ├── devcontainer-feature.json
-│   │   └── install.sh
-│   ├── color
-│   │   ├── devcontainer-feature.json
-│   │   └── install.sh
-|   ├── ...
-│   │   ├── devcontainer-feature.json
-│   │   └── install.sh
+...
+ => ERROR [dev_containers_target_stage 3/3] RUN cd /tmp/build-features/np  0.4s
+------
+ > [dev_containers_target_stage 3/3] RUN cd /tmp/build-features/npm-test_1 && set -a && . ./devcontainer-features.env && set +a && chmod +x ./install.sh && ./install.sh:
+#0 0.346 Activating feature 'npm-test'
+#0 0.347 ./install.sh: 4: pip: not found
+------
 ...
 ```
 
-An [implementing tool](https://containers.dev/supporting#tools) will composite [the documented dev container properties](https://containers.dev/implementors/features/#devcontainer-feature-json-properties) from the feature's `devcontainer-feature.json` file, and execute in the `install.sh` entrypoint script in the container during build time.  Implementing tools are also free to process attributes under the `customizations` property as desired.
+<details>
+  <summary>Full output</summary>
 
-### Options
+  ```
+  vscode ➜ /workspaces/devcontainers-cli-issue-163 (main ✗) $ devcontainer features test . --base-image mcr.microsoft.com/devcontainers/base:ubuntu-22.04 --features npm-test
 
-All available options for a feature should be declared in the `devcontainer-feature.json`.  The syntax for the `options` property can be found in the [devcontainer feature json properties reference](https://containers.dev/implementors/features/#devcontainer-feature-json-properties).
+  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+  |    dev container 'features' |
+  │           v0.14.2           │
+  └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
 
-For example, the `color` feature provides an enum of three possible options (`red`, `gold`, `green`).  If no option is provided in a user's `devcontainer.json`, the value is set to "red".
+  >  baseImage:         mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+  >  Target Folder:     /workspaces/devcontainers-cli-issue-163
+  >  features:          npm-test
+  >  workspaceFolder:   /tmp/vsch/container-features-test/1662982848993
 
-```jsonc
-{
-    // ...
-    "options": {
-        "favorite": {
-            "type": "string",
-            "enum": [
-                "red",
-                "gold",
-                "green"
-            ],
-            "default": "red",
-            "description": "Choose your favorite color."
-        }
-    }
-}
-```
+  ⏳ Building test container...
 
-Options are exported as feature-scoped environment variables.  The option name is captialized and sanitized according to [option resolution](https://containers.dev/implementors/features/#option-resolution).
+  [1 ms] @devcontainers/cli 0.14.2. Node.js v18.9.0. linux 5.15.0-47-generic x64.
+  [37328 ms] Start: Run: docker buildx build --load --build-context dev_containers_feature_content_source=/tmp/vsch-vscode/container-features/0.14.2-1662982849225 --build-arg _DEV_CONTAINERS_BASE_IMAGE=mcr.microsoft.com/devcontainers/base:ubuntu-22.04 --build-arg _DEV_CONTAINERS_IMAGE_USER=root --build-arg _DEV_CONTAINERS_FEATURE_CONTENT_SOURCE=dev_container_feature_content_temp --target dev_containers_target_stage -t vsc-1662982848993-3289bd94f33e17f7e0aa4677032ccb32-features -f /tmp/vsch-vscode/container-features/0.14.2-1662982849225/Dockerfile.extended /tmp/__dev-containers-build-empty
+  [+] Building 2.3s (12/12) FINISHED
+  => [internal] load build definition from Dockerfile.extended              0.0s
+  => => transferring dockerfile: 501B                                       0.0s
+  => [internal] load .dockerignore                                          0.0s
+  => => transferring context: 2B                                            0.0s
+  => resolve image config for docker.io/docker/dockerfile:1.4               0.9s
+  => CACHED docker-image://docker.io/docker/dockerfile:1.4@sha256:9ba7531b  0.0s
+  => [internal] load .dockerignore                                          0.0s
+  => [internal] load build definition from Dockerfile.extended              0.0s
+  => [internal] load metadata for mcr.microsoft.com/devcontainers/base:ubu  0.0s
+  => [context dev_containers_feature_content_source] load .dockerignore     0.0s
+  => => transferring dev_containers_feature_content_source: 2B              0.0s
+  => [context dev_containers_feature_content_source] load from client       0.0s
+  => => transferring dev_containers_feature_content_source: 2.53kB          0.0s
+  => [dev_containers_target_stage 1/3] FROM mcr.microsoft.com/devcontainer  0.2s
+  => [dev_containers_target_stage 2/3] COPY --from=dev_containers_feature_  0.0s
+  => ERROR [dev_containers_target_stage 3/3] RUN cd /tmp/build-features/np  0.4s
+  ------
+  > [dev_containers_target_stage 3/3] RUN cd /tmp/build-features/npm-test_1 && set -a && . ./devcontainer-features.env && set +a && chmod +x ./install.sh && ./install.sh:
+  #0 0.346 Activating feature 'npm-test'
+  #0 0.347 ./install.sh: 4: pip: not found
+  ------
+  ERROR: failed to solve: executor failed running [/bin/sh -c cd /tmp/build-features/npm-test_1 && set -a && . ./devcontainer-features.env && set +a && chmod +x ./install.sh && ./install.sh]: exit code: 127
+  [-] Failed to launch container:
+
+  Command failed: docker buildx build --load --build-context dev_containers_feature_content_source=/tmp/vsch-vscode/container-features/0.14.2-1662982849225 --build-arg _DEV_CONTAINERS_BASE_IMAGE=mcr.microsoft.com/devcontainers/base:ubuntu-22.04 --build-arg _DEV_CONTAINERS_IMAGE_USER=root --build-arg _DEV_CONTAINERS_FEATURE_CONTENT_SOURCE=dev_container_feature_content_temp --target dev_containers_target_stage -t vsc-1662982848993-3289bd94f33e17f7e0aa4677032ccb32-features -f /tmp/vsch-vscode/container-features/0.14.2-1662982849225/Dockerfile.extended /tmp/__dev-containers-build-empty
+  ```
+</details>
+
+The `npm-test` feature specifies the Python feature in it's [`installsAfter`](./src/npm-test/devcontainer-feature.json#L6-L8), so the expectation is the Python and `pip` will be installed before the feature.
+
+Similarly, the global scenario tests fails too; one explicitly includes the `python` feature and one doesn't.
 
 ```bash
-#!/bin/bash
-
-echo "Activating feature 'color'"
-echo "The provided favorite color is: ${FAVORITE}"
-
-...
-```
-
-## Distributing Features
-
-### Versioning
-
-Features are individually versioned by the `version` attribute in a feature's `devcontainer-feature.json`.  Features are versioned according to the semver specification. More details can be found in [the dev container feature specification](https://containers.dev/implementors/features/#versioning).
-
-### Publishing
-
-> NOTE: The Distribution spec can be [found here](https://containers.dev/implementors/features-distribution/) and is in its [finalization stage](https://github.com/devcontainers/spec/issues/70).  
->
-> While any registry [implementing the OCI Distribution spec](https://github.com/opencontainers/distribution-spec) can be used, this template will leverage GHCR (GitHub Container Registry) as the backing registry.
-
-Features are meant to be easily sharable units of dev container configuration and installation code.  
-
-This repo contains a GitHub Action [workflow](.github/workflows/release.yaml) that will publish each feature to GHCR.  By default, each feature will be prefixed with the `<owner/<repo>` namespace.  For example, the two features in this repository can be referenced in a `devcontainer.json` with:
-
-```
-ghcr.io/devcontainers/feature-template/color:1
-ghcr.io/devcontainers/feature-template/hello:1
-```
-
-The provided GitHub Action will also publish a third "metadata" package with just the namespace, eg: `ghcr.io/devcontainers/feature-template`.  This contains information useful for tools aiding in feature discovery.
-
-'`devcontainers/feature-template`' is known as the feature collection namespace.
-
-### Marking Feature Public
-
-Note that by default, GHCR packages are marked as `private`.  To stay within the free tier, features need to be marked as `public`.
-
-This can be done by navigating to the feature's "package settings" page in GHCR, and setting the visibility to 'public`.  The URL may look something like:
-
-```
-https://github.com/users/<owner>/packages/container/<repo>%2F<featureName>/settings
-```
-
-<img width="669" alt="image" src="https://user-images.githubusercontent.com/23246594/185244705-232cf86a-bd05-43cb-9c25-07b45b3f4b04.png">
-
-#### Using private features in Codespaces
-
-For any features hosted in GHCR that are kept private, the `GITHUB_TOKEN` access token in your environment will need to have `package:read` and `contents:read` for the associated repository.
-
-Many implementing tools use a broadly scoped access token and will work automatically.  GitHub Codespaces uses repo-scoped tokens, and therefore you'll need to add the permissions in `devcontainer.json`
-
-An example `devcontainer.json` can be found below.
-
-```jsonc
-{
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-    "features": {
-     "ghcr.io/my-org/private-features/hello:1": {
-            "greeting": "Hello"
-        }
-    },
-    "customizations": {
-        "codespaces": {
-            "repositories": {
-                "my-org/private-features": {
-                    "permissions": {
-                        "packages": "read",
-                        "contents": "read"
-                    }
-                }
-            }
-        }
-    }
-}
+devcontainer features test . \
+  --base-image mcr.microsoft.com/devcontainers/base:ubuntu-22.04 \
+  --global-scenarios-only
 ```
