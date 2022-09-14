@@ -22,8 +22,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # - name: "Install latest devcontainer CLI"
+      #   run: npm install -g @devcontainers/cli
+
       - name: "Install latest devcontainer CLI"
-        run: npm install -g @devcontainers/cli
+        run: |
+          git clone --depth 1 --branch main https://github.com/devcontainers/cli.git &&
+          cd cli &&
+          yarn &&
+          yarn compile &&
+          npm link
 
       - name: "Generating tests for '${{ matrix.features }}' against '${{ matrix.baseImage }}'"
         run: devcontainer features test -f ${{ matrix.features }} -i ${{ matrix.baseImage }} .
@@ -34,8 +42,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # - name: "Install latest devcontainer CLI"
+      #   run: npm install -g @devcontainers/cli
+
       - name: "Install latest devcontainer CLI"
-        run: npm install -g @devcontainers/cli
+        run: |
+          git clone --depth 1 --branch main https://github.com/devcontainers/cli.git &&
+          cd cli &&
+          yarn &&
+          yarn compile &&
+          npm link
 
       - name: "Testing global scenarios"
         run: devcontainer features test --global-scenarios-only .
