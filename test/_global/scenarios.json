@@ -1,11 +1,5 @@
 {
-  "scenario-without-python": {
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
-    "features": {
-      "pip-test": {}
-    }
-  },
-  "scenario-with-python": {
+  "pip-test": {
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
     "features": {
       "ghcr.io/devcontainers/features/python": {},

@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "description": "Testing installsAfter",
   "installsAfter": [
-    "python"
+    "ghcr.io/devcontainers/features/python"
   ]
 }
