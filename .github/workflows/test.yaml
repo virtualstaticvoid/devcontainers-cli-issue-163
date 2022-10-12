@@ -34,7 +34,7 @@ jobs:
           npm link
 
       - name: "Generating tests for '${{ matrix.features }}' against '${{ matrix.baseImage }}'"
-        run: devcontainer features test -f ${{ matrix.features }} -i ${{ matrix.baseImage }} .
+        run: devcontainer features test --features ${{ matrix.features }} --base-image ${{ matrix.baseImage }} .
 
   test-global:
     runs-on: ubuntu-latest
